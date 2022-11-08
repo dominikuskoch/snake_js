@@ -1,0 +1,140 @@
+<h1>Snake</h1>
+<h2>by SiD</h2>
+
+<style>
+    #snake{background-color: black}
+</style>
+
+<span id="punkte">
+</span>
+<br>
+<canvas id="snake" height="300" width="300">
+
+</canvas>
+
+<script>
+    var x = 150;
+    var y = 150;
+    var c = document.getElementById("snake");
+    var ctx = c.getContext("2d");
+    var stop = false;
+    var dir="";
+    var score = 0 ;
+    x_cord = [];
+    y_cord = [];
+    var x_fruit = 0;
+    var y_fruit = 0;
+
+    ctx.beginPath();
+    ctx.fillStyle = "green";   
+    ctx.fillRect(150, 150, 10, 10);
+    ctx.stroke();
+
+    addEventListener('keyup', (event) => {});
+    onkeyup = (event) => { controler (event.key)};
+    
+
+
+    function sleep(milliseconds) {
+        return new Promise(resolve => setTimeout(resolve, milliseconds));
+    }
+
+    function controler(key){
+       // console.log(key);
+        if(key == "ArrowRight"){
+            dir = "right";
+        }
+        if(key == "ArrowLeft"){
+            dir = "left";
+        }
+        if(key == "ArrowUp"){
+            dir = "up";
+        }
+        if(key == "ArrowDown"){
+            dir = "down";
+        }
+        if(key == "1"){
+            dir = "pause"
+        }
+
+        if(key == "2"){
+            init();
+            dir = "";
+            move();
+        }
+
+        if(key == " "){
+            init();
+            dir = "";
+            move();     }
+
+            if(key == "Enter"){
+            init();
+            dir = "";
+            move();     }
+    }
+    
+    function newFruit(){
+        x_fruit= Math.ceil((Math.floor(Math.random() * 290)) / 10) * 10;
+        y_fruit= Math.ceil((Math.floor(Math.random() * 290)) / 10) * 10;
+        ctx.fillStyle = "red";
+        ctx.fillRect(x_fruit, y_fruit, 10, 10);
+        ctx.fillStyle = "green";
+    }
+
+    function init(){
+        x=150;
+        y=150;
+        x_cord=[];
+        y_cord=[];
+        newFruit();
+        dir = "pause";
+        score=0;
+        document.getElementById("punkte").innerHTML="0";
+    }
+
+    async function move(){
+
+        while (dir != "pause"){
+		 	await sleep(50);
+            if ((x < 0) || (x > 290) || (y < 0) || (y > 290)) {
+                dir = "pause";
+                alert("Game Over (du hast die Wand berührt) press Score:" + score + " Press 2 to continue");
+            }
+
+            if ((x == x_fruit) && (y == y_fruit)){
+                score = score + 1;
+                document.getElementById("punkte").innerHTML= score; 
+                newFruit();
+            }
+
+            if (dir == "right") x=x+10;
+            if (dir == "left") x=x-10;
+            if (dir == "up") y=y-10;
+            if (dir == "down") y=y+10;
+           
+        
+            x_cord.push(x);
+            y_cord.push(y);   
+            ctx.fillStyle = "red"; 
+            ctx.clearRect(0, 0, 300, 300);
+            ctx.fillRect(x_fruit, y_fruit, 10, 10);
+            ctx.fillStyle = "green"; 
+            var tmp = score;
+            while ((tmp > 0) && (dir !="pause")){
+                if ((x == (x_cord[(x_cord.length - (tmp+1))])) && y == (y_cord[(x_cord.length - (tmp+1))])){
+                    dir = "pause";
+                    alert("Game Over (du hast dir in den  Schwanz gebissen) Score:" + score + " Press 2 to continue");
+                }
+                ctx.fillRect(x_cord[(x_cord.length - (tmp+1))], y_cord[(y_cord.length - (tmp+1))], 10, 10);
+                tmp = tmp - 1;
+            }
+            
+            ctx.fillRect(x, y, 10, 10);
+            ctx.stroke();
+        
+    }
+}
+    
+
+</script>
